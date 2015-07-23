@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys
 import re
 import redis
 import time, datetime
 import json
 
 from conf import *
-from daemon import BaseDaemon
 
 
 r_server = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
@@ -51,9 +49,12 @@ def send_message():
     msg['From'] = EMAIL_FROM
     msg['To'] = EMAIL
 
-    s = smtplib.SMTP('localhost')
-    s.sendmail(EMAIL_FROM, [EMAIL], msg.as_string())
-    s.quit()
+    try:
+        s = smtplib.SMTP('localhost')
+        s.sendmail(EMAIL_FROM, [EMAIL], msg.as_string())
+        s.quit()
+    except Exception:
+        pass
 
 
 def get_message():
